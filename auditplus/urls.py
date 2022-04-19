@@ -24,4 +24,5 @@ urlpatterns = [
     path('get_sectors',views.get_sectors),
     path('add_user_question',views.add_user_question),
     path('get_questions',views.get_questions),
+    path('add_user_sector',views.add_user_sector)
 ]

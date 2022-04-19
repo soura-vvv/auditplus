@@ -63,7 +63,17 @@ def add_user_question(request,id=0):
             return JsonResponse("Added Successfully",safe=False)
         return JsonResponse("Failed To Add",safe=False)        
 
-
+@csrf_exempt
+def add_user_sector(request,id=0):
+    if request.method=='POST':
+        department_data=JSONParser().parse(request)
+        #return JsonResponse(questionnaire_data,safe=False)
+        department_serializer=DepartmentSerializer(data=department_data)
+        if department_serializer.is_valid():
+            department_serializer.save()
+            return JsonResponse("Added Successfully",safe=False)
+        return JsonResponse("Failed To Add",safe=False)
+        
 @csrf_exempt
 def SaveFile(request):
     file=request.FILES['file']
