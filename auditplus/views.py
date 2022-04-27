@@ -43,7 +43,9 @@ def get_sectors(request,id=0):
         departments=Departments.objects.all()
         departments_serializer=DepartmentSerializer(departments,many=True)
         return JsonResponse(departments_serializer.data,safe=False)
-
+    return invalid_method()
+    
+    
 @csrf_exempt
 def get_questions(request,id=0):
     if request.method=='GET':
@@ -51,6 +53,8 @@ def get_questions(request,id=0):
         questionnaire=Questionnaire.objects.filter(department_id=dept_id["department_id"])
         questionnaire_serializer=QuestionnaireSerializer(questionnaire,many=True)
         return JsonResponse(questionnaire_serializer.data,safe=False)
+    return invalid_method()
+    
 
 @csrf_exempt
 def add_user_question(request,id=0):
@@ -62,6 +66,7 @@ def add_user_question(request,id=0):
             questionnaire_serializer.save()
             return JsonResponse("Added Successfully",safe=False)
         return JsonResponse("Failed To Add",safe=False)        
+    return invalid_method()
 
 @csrf_exempt
 def add_user_sector(request,id=0):
@@ -73,6 +78,40 @@ def add_user_sector(request,id=0):
             department_serializer.save()
             return JsonResponse("Added Successfully",safe=False)
         return JsonResponse("Failed To Add",safe=False)
+    return invalid_method()
+    
+    
+@csrf_exempt
+def register(request,id=0):
+    if request.method=='POST':
+        register_data=JSONParser().parse(request)
+        #return JsonResponse(register_data,safe=False)
+        register_serializer=RegisterSerializer(data=register_data)
+        if register_serializer.is_valid():
+            register_serializer.save()
+            return JsonResponse("Added Successfully",safe=False)
+        return JsonResponse("Failed To Add",safe=False)
+    return invalid_method()
+    
+    
+    
+@csrf_exempt
+def login(request,id=0):
+    if request.method=='POST':
+        login_data=JSONParser().parse(request)
+        #return JsonResponse(register_data,safe=False)
+        login_user=Register.objects.filter(phone_no=login_data["phone_no"]).filter(password=login_data["password"])
+        
+        login_serializer=RegisterSerializer(login_user,many=True)       
+        if login_serializer.data:
+            return JsonResponse(login_serializer.data,safe=False)
+        return JsonResponse("Incorrect Phone / Passoword",safe=False)
+    return invalid_method()
+     
+def invalid_method():
+    return JsonResponse(data="Invalid Method",status=400,safe=False)   
+
+
         
 @csrf_exempt
 def SaveFile(request):

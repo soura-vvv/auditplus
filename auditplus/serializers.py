@@ -14,7 +14,7 @@ class QuestionnaireSerializer(serializers.ModelSerializer):
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model=Register
-        fields=('id','firstname','lastname','username','password','cpassword','phone_no','card_no','time')
+        fields=('id','firstname','lastname','email_id','password','phone_no')
 
 
 class ResponsesSerializer(serializers.ModelSerializer):

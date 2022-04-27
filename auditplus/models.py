@@ -16,12 +16,11 @@ class Register(models.Model):
     id=models.AutoField(primary_key=True)
     firstname=models.CharField(max_length=50)
     lastname=models.CharField(max_length=100)
-    username=models.CharField(max_length=200)
+    email_id=models.CharField(max_length=200)
     password=models.CharField(max_length=50)
-    cpassword=models.CharField(max_length=20)
     phone_no=models.CharField(max_length=50)
-    card_no=models.IntegerField()
-    time=models.DateField(default=datetime.datetime.now().strftime("%x"))
+    
+    
     
 class Responses(models.Model):
     response_id=models.AutoField(primary_key=True)
