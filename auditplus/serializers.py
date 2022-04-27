@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Departments,Questionnaire,Register,Responses
+from .models import Departments,Questionnaire,Register,Responses,UserQuestionnaire
 
 class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,5 +22,9 @@ class ResponsesSerializer(serializers.ModelSerializer):
         model=Responses
         fields=('response_id','hospital','audit_no','comments','uploads','date','response_file','dept')        
         
+class UserQuestionnaireSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=UserQuestionnaire
+        fields=('user_id','question_id','question_description','department_id','industry')
         
    

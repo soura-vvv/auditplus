@@ -31,3 +31,12 @@ class Responses(models.Model):
     date=models.DateField(default=datetime.datetime.now().strftime("%x"))
     response_file= models.FileField(upload_to=None, max_length=254)
     dept=models.CharField(max_length=200)
+    
+    
+class UserQuestionnaire(models.Model):
+    user_id=models.IntegerField()
+    question_id=models.AutoField(primary_key=True)
+    question_description=models.TextField()
+    department_id=models.IntegerField()
+    industry=models.CharField(max_length=40)
+    
