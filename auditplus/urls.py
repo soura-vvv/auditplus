@@ -20,7 +20,7 @@ from . import views
 urlpatterns = [
     #path('department',views.departmentApi),
     #path(r'^department/([0-9]+)$',views.departmentApi),
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
     path('get_sectors',views.get_sectors),
     path('add_user_question',views.add_user_question),
     path('get_questions',views.get_questions),

@@ -4,7 +4,7 @@ from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 import json
 from .models import Departments,Questionnaire,Register,Responses
-from .serializers import DepartmentSerializer,QuestionnaireSerializer,RegisterSerializer,ResponsesSerializer
+from .serializers import DepartmentSerializer, QuestionnaireSerializer,RegisterSerializer,ResponsesSerializer
 
 from django.core.files.storage import default_storage
 
@@ -42,17 +42,25 @@ def get_sectors(request,id=0):
     if request.method=='GET':
         departments=Departments.objects.all()
         departments_serializer=DepartmentSerializer(departments,many=True)
-        return JsonResponse(departments_serializer.data,safe=False)
+        response_data = {}
+        response_data['message'] = 'Success'
+        response_data['data'] = departments_serializer.data
+        return JsonResponse(response_data,status=200,safe=False)
     return invalid_method()
     
     
 @csrf_exempt
 def get_questions(request,id=0):
-    if request.method=='GET':
+    if request.method=='POST':
         dept_id=JSONParser().parse(request)
         questionnaire=Questionnaire.objects.filter(department_id=dept_id["department_id"])
         questionnaire_serializer=QuestionnaireSerializer(questionnaire,many=True)
-        return JsonResponse(questionnaire_serializer.data,safe=False)
+        if questionnaire_serializer.data:
+            response_data = {}
+            response_data['message'] = 'Success'
+            response_data['data'] = questionnaire_serializer.data
+            return JsonResponse(response_data,status=200,safe=False)
+        return JsonResponse({'message' : 'Department not found.'},status=404,safe=False)
     return invalid_method()
     
 
@@ -64,8 +72,8 @@ def add_user_question(request,id=0):
         questionnaire_serializer=QuestionnaireSerializer(data=questionnaire_data)
         if questionnaire_serializer.is_valid():
             questionnaire_serializer.save()
-            return JsonResponse("Added Successfully",safe=False)
-        return JsonResponse("Failed To Add",safe=False)        
+            return JsonResponse({'message' : 'Added successsfully.'}, status=200,safe=False)
+        return JsonResponse({'message' : 'Failed to add.'},status=500,safe=False)        
     return invalid_method()
 
 @csrf_exempt
@@ -76,8 +84,8 @@ def add_user_sector(request,id=0):
         department_serializer=DepartmentSerializer(data=department_data)
         if department_serializer.is_valid():
             department_serializer.save()
-            return JsonResponse("Added Successfully",safe=False)
-        return JsonResponse("Failed To Add",safe=False)
+            return JsonResponse({'message' : 'Added successsfully.'},status=200,safe=False)
+        return JsonResponse({'message' : 'Failed to add.'},status=500,safe=False)
     return invalid_method()
     
     
@@ -89,8 +97,10 @@ def register(request,id=0):
         register_serializer=RegisterSerializer(data=register_data)
         if register_serializer.is_valid():
             register_serializer.save()
-            return JsonResponse("Added Successfully",safe=False)
-        return JsonResponse("Failed To Add",safe=False)
+            response_data = {}
+            response_data['message'] = 'Success'
+            return JsonResponse(response_data,status=200,safe=False)
+        return JsonResponse({'message' : 'Failed to add.'},status=500,safe=False)
     return invalid_method()
     
     
@@ -104,8 +114,11 @@ def login(request,id=0):
         
         login_serializer=RegisterSerializer(login_user,many=True)       
         if login_serializer.data:
-            return JsonResponse(login_serializer.data,safe=False)
-        return JsonResponse("Incorrect Phone / Passoword",safe=False)
+            response_data = {}
+            response_data['message'] = 'Success'
+            response_data['data'] = {'id' : login_serializer.data[0]['id'] , 'firstname' : login_serializer.data[0]['firstname'] , 'lastname' : login_serializer.data[0]['lastname']}
+            return JsonResponse(data=response_data,status=200,safe=False)
+        return JsonResponse({'message' : 'Incorrect Phone / Password'},status=404,safe=False)
     return invalid_method()
      
 def invalid_method():
@@ -118,3 +131,4 @@ def SaveFile(request):
     file=request.FILES['file']
     file_name=default_storage.save(file.name,file)
     return JsonResponse(file_name,safe=False)
+

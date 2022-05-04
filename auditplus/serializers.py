@@ -1,5 +1,6 @@
+from dataclasses import fields
 from rest_framework import serializers
-from .models import Departments,Questionnaire,Register,Responses,UserQuestionnaire
+from .models import Departments, Questionnaire,Register,Responses,UserQuestionnaire
 
 class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:

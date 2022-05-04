@@ -20,8 +20,7 @@ class Register(models.Model):
     password=models.CharField(max_length=50)
     phone_no=models.CharField(max_length=50)
     
-    
-    
+
 class Responses(models.Model):
     response_id=models.AutoField(primary_key=True)
     hospital=models.CharField(max_length=45)
