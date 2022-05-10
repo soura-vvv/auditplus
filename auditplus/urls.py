@@ -26,6 +26,7 @@ urlpatterns = [
     path('get_questions',views.get_questions),
     path('add_user_sector',views.add_user_sector),
     path('register',views.register),
-    path('login',views.login)
+    path('login',views.login),
+    path('get_user_questions',views.get_user_questions),
     
 ]

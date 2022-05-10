@@ -37,5 +37,10 @@ class UserQuestionnaire(models.Model):
     question_id=models.AutoField(primary_key=True)
     question_description=models.TextField()
     department_id=models.IntegerField()
-    industry=models.CharField(max_length=40)
+    topic_id=models.IntegerField()
     
+class UserSectors(models.Model):
+    sector_id=models.AutoField(primary_key=True)
+    sector_name=models.CharField(max_length=50)
+    description=models.CharField(max_length=200)
+    user_id=models.IntegerField()

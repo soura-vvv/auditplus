@@ -3,8 +3,8 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 import json
-from .models import Departments,Questionnaire,Register,Responses
-from .serializers import DepartmentSerializer, QuestionnaireSerializer,RegisterSerializer,ResponsesSerializer
+from .models import Departments,Questionnaire,Register,Responses,UserQuestionnaire,UserSectors
+from .serializers import DepartmentSerializer, QuestionnaireSerializer,RegisterSerializer,ResponsesSerializer,UserQuestionnaireSerializer,UserSectorsSerializer
 
 from django.core.files.storage import default_storage
 
@@ -67,11 +67,11 @@ def get_questions(request,id=0):
 @csrf_exempt
 def add_user_question(request,id=0):
     if request.method=='POST':
-        questionnaire_data=JSONParser().parse(request)
+        user_questionnaire_data=JSONParser().parse(request)
         #return JsonResponse(questionnaire_data,safe=False)
-        questionnaire_serializer=QuestionnaireSerializer(data=questionnaire_data)
-        if questionnaire_serializer.is_valid():
-            questionnaire_serializer.save()
+        user_questionnaire_serializer=UserQuestionnaireSerializer(data=user_questionnaire_data)
+        if user_questionnaire_serializer.is_valid():
+            user_questionnaire_serializer.save()
             return JsonResponse({'message' : 'Added successsfully.'}, status=200,safe=False)
         return JsonResponse({'message' : 'Failed to add.'},status=500,safe=False)        
     return invalid_method()
@@ -79,16 +79,33 @@ def add_user_question(request,id=0):
 @csrf_exempt
 def add_user_sector(request,id=0):
     if request.method=='POST':
-        department_data=JSONParser().parse(request)
+        user_sector_data=JSONParser().parse(request)
         #return JsonResponse(questionnaire_data,safe=False)
-        department_serializer=DepartmentSerializer(data=department_data)
-        if department_serializer.is_valid():
-            department_serializer.save()
+        user_sector_serializer=UserSectorsSerializer(data=user_sector_data)
+        if user_sector_serializer.is_valid():
+            user_sector_serializer.save()
             return JsonResponse({'message' : 'Added successsfully.'},status=200,safe=False)
         return JsonResponse({'message' : 'Failed to add.'},status=500,safe=False)
     return invalid_method()
     
+@csrf_exempt
+def get_user_questions(request,id=0):
+    if request.method=='GET':
+        user_data=JSONParser().parse(request)
+        user_questions=UserQuestionnaire.objects.filter(user_id=user_data["user_id"]).filter(department_id=user_data["department_id"])
+        #return JsonResponse(questionnaire_data,safe=False)
+        user_questionnaire_serializer=UserQuestionnaireSerializer(user_questions,many=True)
+        if user_questionnaire_serializer.data:
+            response_data={}
+            response_data['message']='Success'
+            response_data['data']={'topic_id':user_questionnaire_serializer.data[0]['topic_id'],'question_description':user_questionnaire_serializer.data[0]['question_description'],}
+            return JsonResponse(response_data,status=200,safe=False)
+        return JsonResponse({'message' : 'Invalid.'},status=500,safe=False)
+    return invalid_method() 
     
+ 
+ 
+ 
 @csrf_exempt
 def register(request,id=0):
     if request.method=='POST':
@@ -117,7 +134,7 @@ def login(request,id=0):
             response_data = {}
             response_data['message'] = 'Success'
             response_data['data'] = {'id' : login_serializer.data[0]['id'] , 'firstname' : login_serializer.data[0]['firstname'] , 'lastname' : login_serializer.data[0]['lastname']}
-            return JsonResponse(data=response_data,status=200,safe=False)
+            return JsonResponse(response_data,status=200,safe=False)
         return JsonResponse({'message' : 'Incorrect Phone / Password'},status=404,safe=False)
     return invalid_method()
      
